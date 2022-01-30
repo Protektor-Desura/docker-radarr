@@ -244,23 +244,95 @@ docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
 Once registered you can define the dockerfile to use with `-f Dockerfile.aarch64`.
 
-## Versions
 
-* **27.12.21:** - Add nightly-alpine branch.
-* **17.10.21:** - Remove `UMASK_SET`.
-* **08.05.21:** - Make the paths clearer to the user
-* **17.01.21:** - Deprecate `UMASK_SET` in favor of UMASK in baseimage, see above for more information.
-* **11.30.20:** - Publish `develop` tag.
-* **11.28.20:** - Switch to v3 .NET CORE builds (no more mono, `5.14` tag is deprecated). Rebase to Focal (for issues on arm32v7, [see here](https://docs.linuxserver.io/faq#my-host-is-incompatible-with-images-based-on-ubuntu-focal)).
-* **05.04.20:** - Move app to /app.
-* **01.08.19:** - Rebase to Linuxserver LTS mono version.
-* **13.06.19:** - Add env variable for setting umask.
-* **10.05.19:** - Rebase to Bionic.
-* **23.03.19:** - Switching to new Base images, shift to arm32v7 tag.
-* **09.09.18:** - Add pipeline build process.
-* **24.02.18:** - Add nightly branch.
-* **06.02.18:** - Radarr repo changed owner.
-* **15.12.17:** - Fix continuation lines.
-* **17.04.17:** - Switch to using inhouse mono baseimage, adds python also.
-* **13.04.17:** - Switch to official mono repository.
-* **10.01.17:** - Initial Release.
+# [RandomNinjaAtk/radarr-sma](https://github.com/RandomNinjaAtk/docker-radarr-sma)
+[![Docker Build](https://img.shields.io/docker/cloud/automated/randomninjaatk/radarr-sma?style=flat-square)](https://hub.docker.com/r/randomninjaatk/radarr-sma)
+[![Docker Pulls](https://img.shields.io/docker/pulls/randomninjaatk/radarr-sma?style=flat-square)](https://hub.docker.com/r/randomninjaatk/radarr-sma)
+[![Docker Stars](https://img.shields.io/docker/stars/randomninjaatk/radarr-sma?style=flat-square)](https://hub.docker.com/r/randomninjaatk/radarr-sma)
+[![Docker Hub](https://img.shields.io/badge/Open%20On-DockerHub-blue?style=flat-square)](https://hub.docker.com/r/randomninjaatk/radarr-sma)
+[![Discord](https://img.shields.io/discord/747100476775858276.svg?style=flat-square&label=Discord&logo=discord)](https://discord.gg/JumQXDc "realtime support / chat with the community." )
+
+[Radarr](https://github.com/Radarr/Radarr) - A fork of Sonarr to work with movies à la Couchpotato.
+
+
+[![radarr](https://raw.githubusercontent.com/RandomNinjaAtk/unraid-templates/master/randomninjaatk/img/radarr.png)](https://github.com/Radarr/Radarr)
+
+This containers base image is provided by: [linuxserver/radarr](https://github.com/linuxserver/docker-radarr)
+
+
+## Supported Architectures
+
+The architectures supported by this image are:
+
+| Architecture | Tag |
+| :----: | --- |
+| x86-64 | amd64-latest |
+
+## Version Tags
+
+| Tag | Description |
+| :----: | --- |
+| latest | Radarr Stable + SMA + ffmpeg |
+| preview | Radarr Aphrodite (V3) + SMA + ffmpeg |
+
+## Parameters
+
+Container images are configured using parameters passed at runtime (such as those above). These parameters are separated by a colon and indicate `<external>:<internal>` respectively. For example, `-p 8080:80` would expose port `80` from inside the container to be accessible from the host's IP on port `8080` outside the container.
+
+| Parameter | Function |
+| ---- | --- |
+| `-p 7878` | The port for the Radarr webinterface |
+| `-e PUID=1000` | for UserID - see below for explanation |
+| `-e PGID=1000` | for GroupID - see below for explanation |
+| `-e TZ=Europe/London` | Specify a timezone to use EG Europe/London, this is required for Radarr |
+| `-e UMASK_SET=022` | control permissions of files and directories created by Radarr |
+| `-v /config` | Database and Radarr configs |
+| `-v /storage` | Location of Movie Library and Download managers output directory |
+| `-e UPDATE_SMA="FALSE"` | TRUE = enabled :: Update SMA on container startup |
+
+## Application Setup
+
+Access the webui at `<your-ip>:7878`, for more information check out [Radarr](https://radarr.video/).
+
+# Radarr Configuration
+
+### Enable completed download handling
+* Settings -> Download Client -> Completed Download Handling -> Enable: Yes
+
+### Add Custom Script
+* Settings -> Connect -> + Add -> custom Script
+
+| Parameter | Value |
+| --- | --- |
+| On Grab | No |
+| On Import | Yes |
+| On Upgrade | Yes |
+| On Rename | No |
+| On Health Issue | No |
+| Tags | leave blank |
+| Path | `/scripts/postRadarr.sh` |
+
+# SMA Information:
+
+### Config Information
+Located at `/config/sma/autoProcess.ini` inside the container
+
+### Log Information
+Located at `/config/sma/sma.log` inside the container
+
+### Hardware Acceleration
+
+1. Set "video codec" to: `h264vaapi` or `h265vaapi` in "/config/sma/autoProcess.ini"
+1. Make sure you have passed the correct device to the container, or these will not work...
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
